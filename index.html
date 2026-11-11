@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="it" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlobalPulse Hub | Portale Globale Multitasking & Notizie</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            900: '#070b14',
+                            800: '#0f172a',
+                            700: '#1e293b',
+                            600: '#334155',
+                            accent: '#3b82f6',
+                            glow: '#60a5fa',
+                            neon: '#10b981',
+                            amber: '#f59e0b',
+                            rose: '#f43f5e'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts & FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #070b14; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glow-effect {
+            box-shadow: 0 0 30px -5px rgba(59, 130, 246, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-cyber-900 text-gray-100 min-h-screen flex flex-col selection:bg-blue-600 selection:text-white">
+
+    <!-- Top Global Header / Multi-Region & Language Selector + Export Button -->
+    <header class="sticky top-0 z-50 glass-panel border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+            <!-- Brand Logo -->
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchMainTab('home')">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center glow-effect shadow-lg">
+                    <i class="fa-solid fa-globe text-white text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-lg sm:text-xl tracking-tight bg-gradient-to-r from-blue-400 via-indigo-300 to-emerald-400 bg-clip-text text-transparent">GlobalPulse Hub</h1>
+                    <p class="text-[10px] text-gray-400 font-medium tracking-wider uppercase">Advanced SPA Portal v4.0</p>
+                </div>
+            </div>
+
+            <!-- Global Search Bar -->
+            <div class="flex-1 max-w-md hidden md:block">
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                        <i class="fa-solid fa-magnifying-glass text-sm"></i>
+                    </span>
+                    <input type="text" id="globalSearchInput" oninput="handleGlobalSearch(this.value)" placeholder="Cerca giochi, veicoli, bandi, notizie, libri..." 
+                        class="w-full pl-10 pr-4 py-2 bg-cyber-800/90 border border-gray-700/80 rounded-xl text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition placeholder-gray-500 text-gray-200">
+                </div>
+            </div>
+
+            <!-- Region & Language Selectors + Export & Notification Controls -->
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <!-- Region Selector -->
+                <div class="relative inline-block text-left">
+                    <select id="regionSelector" onchange="changeRegion(this.value)" class="bg-cyber-800 border border-gray-700 text-xs sm:text-sm rounded-lg px-2.5 py-1.5 text-gray-300 focus:outline-none focus:border-blue-500 cursor-pointer">
+                        <option value="IT">🇮🇹 Italia</option>
+                        <option value="US">🇺🇸 United States</option>
+                        <option value="EU">🇪🇺 European Union</option>
+                        <option value="GL">🌍 Global / Worldwide</option>
+                    </select>
+                </div>
+
+                <!-- Language Selector -->
+                <div class="relative inline-block text-left">
+                    <select id="langSelector" onchange="changeLanguage(this.value)" class="bg-cyber-800 border border-gray-700 text-xs sm:text-sm rounded-lg px-2.5 py-1.5 text-gray-300 focus:outline-none focus:border-blue-500 cursor-pointer">
+                        <option value="it">IT</option>
+                        <option value="en">EN</option>
+                        <option value="es">ES</option>
+                        <option value="ru">RU</option>
+                    </select>
+                </div>
+
+                <!-- Code Export / Download Button for GitHub / Netlify -->
+                <button onclick="exportPortalCode()" class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-lg text-xs font-semibold shadow-lg transition" title="Scarica codice sorgente per GitHub e Netlify">
+                    <i class="fa-solid fa-download"></i> Esporta Codice
+                </button>
+
+                <!-- Status Bell -->
+                <button onclick="openNotificationModal()" class="p-2 text-gray-400 hover:text-white bg-cyber-800/50 hover:bg-cyber-700 rounded-lg relative transition">
+                    <i class="fa-solid fa-bell text-sm"></i>
+                    <span class="absolute top-1 right-1 w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Search Bar -->
+    <div class="md:hidden px-4 py-2 bg-cyber-900 border-b border-gray-800 flex gap-2">
+        <div class="relative flex-1">
+            <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                <i class="fa-solid fa-magnifying-glass text-sm"></i>
+            </span>
+            <input type="text" oninput="handleGlobalSearch(this.value)" placeholder="Cerca nel portale..." 
+                class="w-full pl-9 pr-4 py-2 bg-cyber-800 border border-gray-700 rounded-lg text-sm focus:outline-none focus:border-blue-500 text-gray-200">
+        </div>
+        <button onclick="exportPortalCode()" class="px-3 bg-emerald-600 text-white rounded-lg text-xs font-semibold flex items-center justify-center">
+            <i class="fa-solid fa-download"></i>
+        </button>
+    </div>
+
+    <!-- Category Matrix Navigation Bar -->
+    <nav class="bg-cyber-800/90 border-b border-gray-800 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center space-x-1 overflow-x-auto py-2.5 no-scrollbar scroll-smooth">
+                <button onclick="switchCategory('home')" id="cat-btn-home" class="cat-nav-btn px-3.5 py-1.5 rounded-lg text-sm font-semibold whitespace-nowrap bg-blue-600 text-white transition shadow-sm flex items-center gap-2">
+                    <i class="fa-solid fa-house"></i> Home Dashboard
+                </button>
+                <button onclick="switchCategory('gaming')" id="cat-btn-gaming" class="cat-nav-btn px-3.5 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap text-gray-300 hover:bg-cyber-700 hover:text-white transition flex items-center gap-2">
+                    <i class="fa-solid fa-gamepad text-indigo-400"></i> Mondo Giochi
+                </button>
+                <button onclick="switchCategory('vehicles')" id="cat-btn-vehicles" class="cat-nav-btn px-3.5 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap text-gray-300 hover:bg-cyber-700 hover:text-white transition flex items-center gap-2">
+                    <i class="fa-solid fa-car text-amber-400"></i> Veicoli & Motori
+                </button>
+                <button onclick="switchCategory('books')" id="cat-btn-books" class="cat-nav-btn px-3.5 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap text-gray-300 hover:bg-cyber-700 hover:text-white transition flex items-center gap-2">
+                    <i class="fa-solid fa-book-open text-emerald-400"></i> Libri & Editoria
+                </button>
+                <button onclick="switchCategory('cinema')" id="cat-btn-cinema" class="cat-nav-btn px-3.5 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap text-gray-300 hover:bg-cyber-700 hover:text-white transition flex items-center gap-2">
+                    <i class="fa-solid fa-film text-rose-400"></i> Cinema & TV
+                </button>
+                <button onclick="switchCategory('fashion')" id="cat-btn-fashion" class="cat-nav-btn px-3.5 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap text-gray-300 hover:bg-cyber-700 hover:text-white transition flex items-center gap-2">
+                    <i class="fa-solid fa-shirt text-purple-400"></i> Moda & Lifestyle
+                </button>
+                <button onclick="switchCategory('cuisine')" id="cat-btn-cuisine" class="cat-nav-btn px-3.5 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap text-gray-300 hover:bg-cyber-700 hover:text-white transition flex items-center gap-2">
+                    <i class="fa-solid fa-utensils text-orange-400"></i> Cucina & Gastronomia
+                </button>
+                <button onclick="switchCategory('politics')" id="cat-btn-politics" class="cat-nav-btn px-3.5 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap text-gray-300 hover:bg-cyber-700 hover:text-white transition flex items-center gap-2">
+                    <i class="fa-solid fa-landmark text-blue-300"></i> Politica & Appalti
+                </button>
+                <button onclick="switchCategory('jobs')" id="cat-btn-jobs" class="cat-nav-btn px-3.5 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap text-gray-300 hover:bg-cyber-700 hover:text-white transition flex items-center gap-2">
+                    <i class="fa-solid fa-briefcase text-teal-400"></i> Lavoro & Carriere
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- SEARCH RESULTS OVERLAY VIEW -->
+        <div id="search-results-view" class="hidden mb-8">
+            <div class="flex items-center justify-between mb-4 pb-2 border-b border-gray-800">
+                <h2 class="text-xl font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-search text-blue-500"></i> Risultati Ricerca Globale: <span id="search-query-text" class="text-blue-400"></span>
+                </h2>
+                <button onclick="clearSearch()" class="text-xs bg-cyber-800 hover:bg-cyber-700 px-3 py-1 rounded-lg text-gray-300">Chiudi ricerca</button>
+            </div>
+            <div id="search-results-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+
+        <!-- MAIN HOME DASHBOARD VIEW -->
+        <div id="view-home" class="space-y-8">
+            <!-- Hero Banner -->
+            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-900/40 via-indigo-900/30 to-cyber-800 border border-blue-500/20 p-6 sm:p-10 shadow-2xl">
+                <div class="relative z-10 max-w-2xl">
+                    <span class="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-xs font-semibold uppercase tracking-wider border border-blue-500/30">
+                        <i class="fa-solid fa-bolt mr-1"></i> Global Intelligence Portal
+                    </span>
+                    <h2 class="text-2xl sm:text-4xl font-extrabold mt-3 tracking-tight text-white">
+                        Tutto il Mondo, Ogni Nicchia, in Un Unico Portale.
+                    </h2>
+                    <p class="text-gray-300 mt-2 text-sm sm:text-base leading-relaxed">
+                        Esplora notizie in diretta, link ufficiali e community forum suddivisi per singoli giochi, veicoli, settori editoriali, politici ed economici geolocalizzati.
+                    </p>
+                    <div class="mt-6 flex flex-wrap gap-3">
+                        <button onclick="switchCategory('gaming')" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-medium text-sm transition shadow-lg shadow-blue-600/30 flex items-center gap-2">
+                            <i class="fa-solid fa-gamepad"></i> Esplora Mondo Giochi
+                        </button>
+                        <button onclick="switchCategory('vehicles')" class="px-5 py-2.5 bg-cyber-800 hover:bg-cyber-700 text-gray-200 border border-gray-700 rounded-xl font-medium text-sm transition flex items-center gap-2">
+                            <i class="fa-solid fa-car"></i> Veicoli & Motori
+                        </button>
+                    </div>
+                </div>
+                <div class="absolute right-0 top-0 bottom-0 w-1/3 hidden lg:flex items-center justify-center opacity-20 pointer-events-none">
+                    <i class="fa-solid fa-network-wired text-9xl text-blue-400"></i>
+                </div>
+            </div>
+
+            <!-- Quick Sector Grid -->
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-bold text-gray-200 flex items-center gap-2">
+                        <i class="fa-solid fa-compass text-blue-500"></i> Settori Mondiali & Nicchie Principali
+                    </h3>
+                    <span class="text-xs text-gray-400" id="current-region-display">Area: Italia (IT)</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- Card Gaming -->
+                    <div onclick="switchCategory('gaming')" class="glass-panel hover:border-blue-500/50 p-5 rounded-xl cursor-pointer transition transform hover:-translate-y-1 group">
+                        <div class="w-12 h-12 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center text-xl mb-3 group-hover:scale-110 transition">
+                            <i class="fa-solid fa-gamepad"></i>
+                        </div>
+                        <h4 class="font-bold text-base text-white group-hover:text-blue-400 transition">Mondo Giochi</h4>
+                        <p class="text-xs text-gray-400 mt-1">DayZ, Rust, GTA VI, Call of Duty, League of Legends e cataloghi completi con feed ufficiali.</p>
+                        <div class="mt-4 flex items-center justify-between text-xs text-blue-400 font-medium">
+                            <span>Cataloghi per gioco</span>
+                            <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition"></i>
+                        </div>
+                    </div>
+
+                    <!-- Card Vehicles -->
+                    <div onclick="switchCategory('vehicles')" class="glass-panel hover:border-amber-500/50 p-5 rounded-xl cursor-pointer transition transform hover:-translate-y-1 group">
+                        <div class="w-12 h-12 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center text-xl mb-3 group-hover:scale-110 transition">
+                            <i class="fa-solid fa-car"></i>
+                        </div>
+                        <h4 class="font-bold text-base text-white group-hover:text-amber-400 transition">Veicoli & Motori</h4>
+                        <p class="text-xs text-gray-400 mt-1">Auto, Moto, Camion, Mezzi Pesanti, Trattori e Macchinari Agricoli con novità internazionali.</p>
+                        <div class="mt-4 flex items-center justify-between text-xs text-amber-400 font-medium">
+                            <span>Auto, Moto, Trattori</span>
+                            <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition"></i>
+                        </div>
+                    </div>
+
+                    <!-- Card Books -->
+                    <div onclick="switchCategory('books')" class="glass-panel hover:border-emerald-500/50 p-5 rounded-xl cursor-pointer transition transform hover:-translate-y-1 group">
+                        <div class="w-12 h-12 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-xl mb-3 group-hover:scale-110 transition">
+                            <i class="fa-solid fa-book-open"></i>
+                        </div>
+                        <h4 class="font-bold text-base text-white group-hover:text-emerald-400 transition">Libri & Editoria</h4>
+                        <p class="text-xs text-gray-400 mt-1">Distopie, Cospirazioni, Self-Publishing e uscite librarie globali.</p>
+                        <div class="mt-4 flex items-center justify-between text-xs text-emerald-400 font-medium">
+                            <span>Recensioni & Autori</span>
+                            <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition"></i>
+                        </div>
+                    </div>
+
+                    <!-- Card Politics & Tenders -->
+                    <div onclick="switchCategory('politics')" class="glass-panel hover:border-blue-400/50 p-5 rounded-xl cursor-pointer transition transform hover:-translate-y-1 group">
+                        <div class="w-12 h-12 rounded-lg bg-blue-500/10 text-blue-300 flex items-center justify-center text-xl mb-3 group-hover:scale-110 transition">
+                            <i class="fa-solid fa-landmark"></i>
+                        </div>
+                        <h4 class="font-bold text-base text-white group-hover:text-blue-300 transition">Politica & Appalti</h4>
+                        <p class="text-xs text-gray-400 mt-1">Gazzetta Ufficiale, bandi di gara pubblici, trasparenza e normative territoriali.</p>
+                        <div class="mt-4 flex items-center justify-between text-xs text-blue-300 font-medium">
+                            <span>Bandi & Normative</span>
+                            <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Breaking Ticker / General Feed -->
+            <div class="glass-panel p-6 rounded-2xl">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-bold text-gray-200 flex items-center gap-2">
+                        <i class="fa-solid fa-satellite-dish text-emerald-400 animate-pulse"></i> Ultime Notizie in Diretta (Feed Globale)
+                    </h3>
+                    <span class="text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2.5 py-1 rounded-full font-medium">Aggiornato ora</span>
+                </div>
+                <div id="home-live-news-feed" class="space-y-4">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- CATEGORY VIEW (Dynamic Content for Gaming, Vehicles, etc.) -->
+        <div id="view-category" class="hidden space-y-6">
+            <!-- Category Header -->
+            <div id="category-header" class="glass-panel p-6 rounded-2xl border-l-4 border-blue-500 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div>
+                    <div class="flex items-center gap-2 text-xs font-semibold text-blue-400 uppercase tracking-wider mb-1">
+                        <span id="cat-badge-icon"><i class="fa-solid fa-folder"></i></span>
+                        <span id="cat-badge-name">Settore</span>
+                    </div>
+                    <h2 id="cat-title" class="text-2xl sm:text-3xl font-extrabold text-white">Nome Categoria</h2>
+                    <p id="cat-desc" class="text-gray-300 text-sm mt-1">Descrizione dettagliata della sezione con notizie e community.</p>
+                </div>
+            </div>
+
+            <!-- Sub-Item Catalog Grid (e.g., Specific Games like DayZ, Rust, or Vehicles like Auto, Camion, Trattori) -->
+            <div id="sub-catalog-section">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 id="sub-catalog-title" class="text-lg font-bold text-gray-200 flex items-center gap-2">
+                        <i class="fa-solid fa-list-ul text-blue-500"></i> Seleziona Specifico Gioco / Veicolo / Nicchia
+                    </h3>
+                    <div class="relative">
+                        <input type="text" id="subCatalogSearch" oninput="filterSubCatalog(this.value)" placeholder="Filtra elementi..." 
+                            class="bg-cyber-800 border border-gray-700 text-xs rounded-lg px-3 py-1.5 text-gray-300 focus:outline-none focus:border-blue-500">
+                    </div>
+                </div>
+                <div id="sub-catalog-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Injected dynamically -->
+                </div>
+            </div>
+
+            <!-- DETAIL VIEW FOR A SPECIFIC ITEM (e.g. DayZ News & Forum) -->
+            <div id="item-detail-view" class="hidden space-y-6">
+                <!-- Back Button & Official Link Header -->
+                <div class="flex items-center justify-between">
+                    <button onclick="backToSubCatalog()" class="px-4 py-2 bg-cyber-800 hover:bg-cyber-700 border border-gray-700 rounded-xl text-xs font-medium text-gray-200 flex items-center gap-2 transition">
+                        <i class="fa-solid fa-arrow-left"></i> Torna al catalogo
+                    </button>
+                    <div id="item-official-links" class="flex items-center gap-2">
+                        <!-- Official website button injected here -->
+                    </div>
+                </div>
+
+                <!-- Item Banner Cover -->
+                <div id="item-banner-card" class="relative rounded-2xl overflow-hidden glass-panel p-6 sm:p-8 border border-blue-500/30 flex flex-col md:flex-row items-center gap-6">
+                    <div id="item-cover-icon" class="w-24 h-24 sm:w-32 sm:h-32 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-4xl sm:text-6xl text-white shadow-xl shrink-0">
+                        <i class="fa-solid fa-gamepad"></i>
+                    </div>
+                    <div class="flex-1 text-center md:text-left">
+                        <div class="flex flex-wrap items-center justify-center md:justify-start gap-2 mb-2">
+                            <span id="item-badge-tag" class="px-2.5 py-0.5 bg-blue-500/20 text-blue-400 rounded-full text-xs font-semibold border border-blue-500/30">Official Hub</span>
+                            <span id="item-region-tag" class="px-2.5 py-0.5 bg-cyber-700 text-gray-300 rounded-full text-xs font-medium">Italia (IT)</span>
+                        </div>
+                        <h2 id="item-title" class="text-2xl sm:text-3xl font-extrabold text-white">Titolo Elemento</h2>
+                        <p id="item-long-desc" class="text-gray-300 text-sm mt-2 leading-relaxed">Descrizione approfondita e dettagli tecnici dell'elemento selezionato.</p>
+                    </div>
+                </div>
+
+                <!-- Tabs for Live News vs Community Forum -->
+                <div class="border-b border-gray-800">
+                    <div class="flex space-x-6">
+                        <button onclick="switchItemTab('news')" id="item-tab-news" class="pb-3 text-sm font-semibold border-b-2 border-blue-500 text-blue-400 flex items-center gap-2 transition">
+                            <i class="fa-solid fa-newspaper"></i> Notizie in Diretta & RSS Ufficiali
+                        </button>
+                        <button onclick="switchItemTab('forum')" id="item-tab-forum" class="pb-3 text-sm font-medium border-b-2 border-transparent text-gray-400 hover:text-gray-200 flex items-center gap-2 transition">
+                            <i class="fa-solid fa-comments"></i> Forum Community & Info Generali
+                        </button>
+                    </div>
+                </div>
+
+                <!-- TAB CONTENT: NEWS -->
+                <div id="item-content-news" class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-bold text-base text-gray-200 flex items-center gap-2">
+                            <i class="fa-solid fa-rss text-amber-400"></i> Ultime Notizie e Link Ufficiali
+                        </h3>
+                        <span class="text-xs text-gray-400">Fonti verificate e feed territoriali</span>
+                    </div>
+                    <div id="item-news-list" class="space-y-3">
+                        <!-- Injected via JS -->
+                    </div>
+                </div>
+
+                <!-- TAB CONTENT: FORUM -->
+                <div id="item-content-forum" class="hidden space-y-6">
+                    <!-- Forum Subsections Header -->
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-cyber-800/60 p-4 rounded-xl border border-gray-700/60">
+                        <div class="flex items-center space-x-2">
+                            <button onclick="switchForumSection('community')" id="forum-sec-community" class="px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold bg-blue-600 text-white transition shadow">
+                                <i class="fa-solid fa-users mr-1"></i> Community & Discussioni
+                            </button>
+                            <button onclick="switchForumSection('general')" id="forum-sec-general" class="px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-gray-300 hover:bg-cyber-700 hover:text-white transition">
+                                <i class="fa-solid fa-circle-info mr-1"></i> Info Generali & Guide
+                            </button>
+                        </div>
+                        <button onclick="openNewThreadModal()" class="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl text-xs font-medium shadow-lg transition flex items-center gap-2">
+                            <i class="fa-solid fa-plus"></i> Nuovo Topic / Discussione
+                        </button>
+                    </div>
+
+                    <!-- Forum Threads Container -->
+                    <div id="forum-threads-list" class="space-y-3">
+                        <!-- Injected via JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- NEW THREAD MODAL -->
+    <div id="threadModal" class="fixed inset-0 z-50 bg-cyber-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-lg rounded-2xl p-6 border border-gray-700 shadow-2xl">
+            <div class="flex items-center justify-between pb-4 border-b border-gray-800 mb-4">
+                <h3 class="font-bold text-lg text-white flex items-center gap-2">
+                    <i class="fa-solid fa-pen-to-square text-blue-500"></i> Crea Nuova Discussione
+                </h3>
+                <button onclick="closeNewThreadModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form onsubmit="handleCreateThread(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1">Sezione Forum</label>
+                    <select id="newThreadSection" class="w-full bg-cyber-800 border border-gray-700 rounded-xl px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-blue-500">
+                        <option value="community">Community & Discussioni</option>
+                        <option value="general">Info Generali & Guide</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1">Titolo Discussione</label>
+                    <input type="text" id="newThreadTitle" required placeholder="Es. Migliori server o configurazioni..." 
+                        class="w-full bg-cyber-800 border border-gray-700 rounded-xl px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1">Il tuo nome / Nickname</label>
+                    <input type="text" id="newThreadAuthor" required placeholder="Es. CyberGamer99" 
+                        class="w-full bg-cyber-800 border border-gray-700 rounded-xl px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1">Contenuto del messaggio</label>
+                    <textarea id="newThreadContent" rows="4" required placeholder="Scrivi i dettagli del topic..." 
+                        class="w-full bg-cyber-800 border border-gray-700 rounded-xl px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-blue-500"></textarea>
+                </div>
+                <div class="flex justify-end space-x-3 pt-2">
+                    <button type="button" onclick="closeNewThreadModal()" class="px-4 py-2 bg-cyber-800 hover:bg-cyber-700 text-gray-300 rounded-xl text-xs font-medium">Annulla</button>
+                    <button type="submit" class="px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-medium shadow-lg shadow-blue-600/30">Pubblica Discussione</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- NOTIFICATION MODAL -->
+    <div id="notificationModal" class="fixed inset-0 z-50 bg-cyber-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-md rounded-2xl p-6 border border-gray-700 shadow-2xl">
+            <div class="flex items-center justify-between pb-4 border-b border-gray-800 mb-4">
+                <h3 class="font-bold text-lg text-white flex items-center gap-2">
+                    <i class="fa-solid fa-bell text-emerald-400"></i> Centro Notizie & GitHub Export
+                </h3>
+                <button onclick="closeNotificationModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="space-y-3">
+                <div class="p-3 bg-cyber-800/80 rounded-xl border border-gray-700/50">
+                    <div class="flex items-center justify-between text-xs text-gray-400 mb-1">
+                        <span class="text-emerald-400 font-semibold">Deploy Pronto</span>
+                        <span>Ora</span>
+                    </div>
+                    <p class="text-xs text-gray-200">Puoi esportare questo portale con il pulsante in alto e caricarlo su GitHub e Netlify in 1 minuto.</p>
+                </div>
+                <div class="p-3 bg-cyber-800/80 rounded-xl border border-gray-700/50">
+                    <div class="flex items-center justify-between text-xs text-gray-400 mb-1">
+                        <span class="text-blue-400 font-semibold">Mondo Giochi & Veicoli & Libri</span>
+                    </div>
+                    <p class="text-xs text-gray-200">Cataloghi completi per DayZ, Rust, GTA VI, Auto, Moto, Camion, Trattori e Libri di Cospirazione attivi.</p>
+                </div>
+            </div>
+            <div class="mt-5 text-right">
+                <button onclick="closeNotificationModal()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-medium">Chiudi</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-cyber-900 border-t border-gray-800 py-8 mt-12 text-center text-xs text-gray-500">
+        <div class="max-w-7xl mx-auto px-4 space-y-3">
+            <div class="flex items-center justify-center space-x-6">
+                <span class="hover:text-gray-300 cursor-pointer" onclick="exportPortalCode()">Esporta Codice Sorgente</span>
+                <span class="hover:text-gray-300 cursor-pointer">Termini & Privacy</span>
+                <span class="hover:text-gray-300 cursor-pointer">API RSS Diretta</span>
+            </div>
+            <p>© 2026 GlobalPulse Hub. Portale Globale Multitasking per Notizie, Giochi, Veicoli, Editoria e Settori Mondiali.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Portal Logic -->
+    <script>
+        // Portal State Data
+        let currentRegion = 'IT';
+        let currentLanguage = 'it';
+        let activeMainTab = 'home';
+        let activeCategoryKey = null;
+        let activeItemId = null;
+        let activeForumSection = 'community';
+
+        // Comprehensive Database across Sectors, Games, Vehicles, Books, Politics, Jobs, etc.
+        const portalDatabase = {
+            gaming: {
+                name: "Mondo Giochi & Videogiochi",
+                icon: "fa-gamepad",
+                color: "indigo",
+                desc: "Copertura in tempo reale di ogni singolo gioco con feed ufficiali, notizie e community forum dedicate.",
+                items: [
+                    {
+                        id: 'dayz',
+                        name: 'DayZ',
+                        tagline: 'Survival Sandbox Open World',
+                        icon: 'fa-skull',
+                        bgGradient: 'from-amber-700 to-stone-900',
+                        officialUrl: 'https://dayz.com',
+                        officialName: 'DayZ Official Site',
+                        description: 'Il celebre simulatore di sopravvivenza hardcore ambientato nella regione post-sovietica di Chernarus e Livonia.',
+                        news: [
+                            { title: 'DayZ Aggiornamento: Nuove armi e bilanciamento stamina', source: 'Bohemia Interactive Dev Blog', time: '2 ore fa', url: 'https://dayz.com/blog' },
+                            { title: 'Community Spotlight: Le migliori basi fortificate su server ufficiali', source: 'DayZ Italia Community', time: 'Ieri', url: 'https://community.dayz.com' }
+                        ],
+                        forum: {
+                            community: [
+                                { id: 1, title: 'Cerco compagni per server ufficiale hardcore (PC)', author: 'Survivor_IT', replies: 14, time: '3 ore fa', content: 'Siamo in 2, cerchiamo altri player maturi per base fissa.' },
+                                { id: 2, title: 'Migliori loot locations nella patch corrente', author: 'AlphaWolf', replies: 8, time: 'Ieri', content: 'Ecco la mappa aggiornata dei Military Convoy.' }
+                            ],
+                            general: [
+                                { id: 3, title: 'Guida completa alla sopravvivenza e alle malattie', author: 'DoctorWho', replies: 22, time: '3 giorni fa', content: 'Come curare il colera e gestire l ipotermia nei boschi.' }
+                            ]
+                        }
+                    },
+                    {
+                        id: 'rust',
+                        name: 'Rust',
+                        tagline: 'Multiplayer Survival & Crafting',
+                        icon: 'fa-shield-halved',
+                        bgGradient: 'from-orange-800 to-amber-950',
+                        officialUrl: 'https://rust.facepunch.com',
+                        officialName: 'Facepunch Studios',
+                        description: 'L unico scopo in Rust è sopravvivere in un mondo ostile pieno di radiotossicità e raid.',
+                        news: [
+                            { title: 'Rust Wipe mensile: Modifiche alla mappa e torrette automatiche', source: 'Facepunch News', time: '5 ore fa', url: 'https://rust.facepunch.com/news' }
+                        ],
+                        forum: {
+                            community: [
+                                { id: 4, title: 'Clan italiano cerca builder e pvpers attivi', author: 'IronClad', replies: 19, time: '4 ore fa', content: 'Server ufficiale EU Main. Richiesta cuffie e Discord.' }
+                            ],
+                            general: [
+                                { id: 5, title: 'Tutorial circuiti elettrici automatici per basi', author: 'TeslaFan', replies: 12, time: '2 giorni fa', content: 'Guida passo passo con interruttori e sensori di movimento.' }
+                            ]
+                        }
+                    },
+                    {
+                        id: 'gta6',
+                        name: 'GTA VI (Grand Theft Auto)',
+                        tagline: 'Open World Action Crime',
+                        icon: 'fa-car-burst',
+                        bgGradient: 'from-pink-600 to-purple-900',
+                        officialUrl: 'https://www.rockstargames.com/gta-vi',
+                        officialName: 'Rockstar Games Portal',
+                        description: 'Le ultime notizie ufficiali, leak verificati e analisi sulle strade di Vice City e Leonida.',
+                        news: [
+                            { title: 'Rockstar rilascia nuovi dettagli sul motore grafico RAGE 9', source: 'IGN Global', time: '1 ora fa', url: 'https://ign.com' }
+                        ],
+                        forum: {
+                            community: [
+                                { id: 6, title: 'Speculazioni sulla data di uscita e pre-order', author: 'ViceCity99', replies: 45, time: '5 ore fa', content: 'Secondo voi ci saranno edizioni collector fisiche?' }
+                            ],
+                            general: [
+                                { id: 7, title: 'Raccolta di tutte le informazioni confermate finora', author: 'AdminNews', replies: 30, time: '3 giorni fa', content: 'FAQ ufficiale sui protagonisti Lucia e Jason.' }
+                            ]
+                        }
+                    },
+                    {
+                        id: 'cod',
+                        name: 'Call of Duty: Warzone',
+                        tagline: 'Tactical Battle Royale',
+                        icon: 'fa-crosshairs',
+                        bgGradient: 'from-emerald-800 to-slate-900',
+                        officialUrl: 'https://www.callofduty.com',
+                        officialName: 'Activision Official',
+                        description: 'Meta armi, loadout consigliati, tornei e patch note ufficiali per la stagione in corso.',
+                        news: [
+                            { title: 'Meta armi Stagione: Il fucile d assalto definitivo', source: 'CharlieIntel', time: '3 ore fa', url: 'https://charlieintel.com' }
+                        ],
+                        forum: {
+                            community: [
+                                { id: 8, title: 'Cerco 2 player per trio in Ranked Warzone', author: 'SniperKing', replies: 7, time: '1 ora fa', content: 'Diamond rank minimo richiesto, microfono attivo.' }
+                            ],
+                            general: [
+                                { id: 9, title: 'Migliori impostazioni audio e sensibilità', author: 'ProGamer', replies: 15, time: '2 giorni fa', content: 'Guida per sentire i passi dei nemici senza distorsioni.' }
+                            ]
+                        }
+                    }
+                ]
+            },
+            vehicles: {
+                name: "Veicoli & Motori (Auto, Moto, Camion, Trattori)",
+                icon: "fa-car",
+                color: "amber",
+                desc: "Cataloghi dedicati al mondo dei motori a 2 e 4 ruote, veicoli pesanti, camion e mezzi agricoli.",
+                items: [
+                    {
+                        id: 'automobiles',
+                        name: 'Automobili & Supercar',
+                        tagline: 'Novità Auto, Elettriche & Test Drive',
+                        icon: 'fa-car-side',
+                        bgGradient: 'from-blue-900 to-gray-900',
+                        officialUrl: 'https://www.quattroruote.it',
+                        officialName: 'Quattroruote / MotorTrend',
+                        description: 'Ultime uscite nel mercato automobilistico globale, prove su strada e transizione elettrica.',
+                        news: [
+                            { title: 'Test drive nuova berlina elettrica ad alte prestazioni', source: 'Quattroruote', time: '2 ore fa', url: 'https://quattroruote.it' }
+                        ],
+                        forum: {
+                            community: [
+                                { id: 10, title: 'Consiglio acquisto SUV ibrido plug-in', author: 'DriverMilano', replies: 11, time: '5 ore fa', content: 'Indeciso tra modello tedesco e giapponese. Esperienze?' }
+                            ],
+                            general: [
+                                { id: 11, title: 'Manutenzione batterie litio: Consigli utili', author: 'MechanicPro', replies: 6, time: '3 giorni fa', content: 'Come preservare l autonomia nel lungo periodo.' }
+                            ]
+                        }
+                    },
+                    {
+                        id: 'motorcycles',
+                        name: 'Moto & Due Ruote',
+                        tagline: 'Sportive, Naked & Touring',
+                        icon: 'fa-motorcycle',
+                        bgGradient: 'from-red-900 to-neutral-900',
+                        officialUrl: 'https://www.moto.it',
+                        officialName: 'Moto.it Portal',
+                        description: 'Raduni, prove su pista, novità di mercato e sicurezza stradale per motociclisti.',
+                        news: [
+                            { title: 'Presentata la nuova gamma crossover per viaggi lunghi', source: 'Moto.it', time: '4 ore fa', url: 'https://moto.it' }
+                        ],
+                        forum: {
+                            community: [
+                                { id: 12, title: 'Organizzazione motogiro Dolomiti weekend', author: 'BikerRoma', replies: 16, time: 'Ieri', content: 'Partenza da Verona, itinerario di 3 giorni tra passi alpini.' }
+                            ],
+                            general: [
+                                { id: 13, title: 'Scelta dell abbigliamento tecnico in Cordura o pelle', author: 'SafetyFirst', replies: 9, time: '4 giorni fa', content: 'Certificazioni EN 17092 spiegate chiaramente.' }
+                            ]
+                        }
+                    },
+                    {
+                        id: 'trucks',
+                        name: 'Camion & Veicoli Pesanti',
+                        tagline: 'Logistica, Trasporto Merci & Flotte',
+                        icon: 'fa-truck-front',
+                        bgGradient: 'from-amber-800 to-stone-900',
+                        officialUrl: 'https://www.uominiehtrasporti.it',
+                        officialName: 'Uomini e Trasporti',
+                        description: 'Il mondo dell autotrasporto professionale, normative europee, flotte e camion elettrici a idrogeno.',
+                        news: [
+                            { title: 'Nuovi corridoi logistici europei per mezzi pesanti green', source: 'Trasporto Europa', time: '5 ore fa', url: 'https://trasportoeuropa.it' }
+                        ],
+                        forum: {
+                            community: [
+                                { id: 14, title: 'Tempi di guida e riposo tachigrafo intelligente', author: 'TruckDriverIT', replies: 18, time: '2 giorni fa', content: 'Chiarimenti sui controlli transfrontalieri.' }
+                            ],
+                            general: [
+                                { id: 15, title: 'Migliori aree di sosta protette in autostrada', author: 'LogisticsMaster', replies: 11, time: '5 giorni fa', content: 'Mappa delle piazzole sicure per merci di valore.' }
+                            ]
+                        }
+                    },
+                    {
+                        id: 'tractors',
+                        name: 'Trattori & Macchine Agricole',
+                        tagline: 'Agricoltura 4.0 & Mezzi Pesanti',
+                        icon: 'fa-tractor',
+                        bgGradient: 'from-emerald-900 to-stone-900',
+                        officialUrl: 'https://www.trattoriweb.com',
+                        officialName: 'TrattoriWeb / Macchine Agricole',
+                        description: 'Innovazione tecnologica nei campi, trattori autonomi, droni agricoli e bandi PSR.',
+                        news: [
+                            { title: 'Agricoltura di precisione: Sensori IoT nei vigneti', source: 'Terra e Vita', time: '1 giorno fa', url: 'https://terraevita.it' }
+                        ],
+                        forum: {
+                            community: [
+                                { id: 16, title: 'Esperienze con guida satellitare RTK sui trattori', author: 'AgriFarmer', replies: 7, time: '3 giorni fa', content: 'Precisione centimetrica e risparmio carburante.' }
+                            ],
+                            general: [
+                                { id: 17, title: 'Manutenzione ordinaria trasmissioni powershift', author: 'MechanicAgri', replies: 5, time: '1 settimana fa', content: 'Consigli per la sostituzione oli idraulici.' }
+                            ]
+                        }
+                    }
+                ]
+            },
+            books: {
+                name: "Libri & Editoria (Cospirazioni, Self-Publishing & Sci-Fi)",
+                icon: "fa-book-open",
+                color: "emerald",
+                desc: "Spazio dedicato alla narrativa, distopie, libri di cospirazione, self-publishing e aggiornamenti sull editoria.",
+                items: [
+                    {
+                        id: 'conspiracy',
+                        name: 'Libri di Cospirazione & Misteri',
+                        tagline: 'Geopolitica Occulta & Verità Nascoste',
+                        icon: 'fa-user-secret',
+                        bgGradient: 'from-stone-900 to-amber-950',
+                        officialUrl: 'https://www.macrolibrarsi.it',
+                        officialName: 'Macrolibrarsi / Archivi Segreti',
+                        description: 'Analisi critiche, libri di inchiesta geopolitica, misteri storici e cospirazioni globali documentate.',
+                        news: [
+                            { title: 'Nuove inchieste sui trattati internazionali segreti', source: 'Geopolitical Watch', time: '4 ore fa', url: 'https://macrolibrarsi.it' }
+                        ],
+                        forum: {
+                            community: [
+                                { id: 18, title: 'Discussione sui libri di inchiesta economica globale', author: 'TruthSeeker', replies: 19, time: '1 giorno fa', content: 'Analisi dei testi storici e delle banche centrali.' }
+                            ],
+                            general: [
+                                { id: 19, title: 'Bibliografia consigliata sulla storia segreta del Novecento', author: 'Historian99', replies: 12, time: '3 giorni fa', content: 'Raccolta di saggi e libri censurati o di nicchia.' }
+                            ]
+                        }
+                    },
+                    {
+                        id: 'scifi',
+                        name: 'Distopie & Sci-Fi',
+                        tagline: 'Futuri Alternativi & Viaggi Cosmici',
+                        icon: 'fa-rocket',
+                        bgGradient: 'from-indigo-900 to-emerald-950',
+                        officialUrl: 'https://www.fantascienza.com',
+                        officialName: 'Fantascienza.com Portal',
+                        description: 'Romanzi cyberpunk, universi post-apocalittici e grandi classici della letteratura speculativa.',
+                        news: [
+                            { title: 'I migliori romanzi distopici pubblicati quest anno', source: 'Wired Books', time: 'Ieri', url: 'https://wired.it' }
+                        ],
+                        forum: {
+                            community: [
+                                { id: 20, title: 'Club del libro: Discussione su 1984 e Fahrenheit 451', author: 'ReaderOne', replies: 25, time: '2 giorni fa', content: 'Quanto sono attuali oggi queste visioni?' }
+                            ],
+                            general: [
+                                { id: 21, title: 'Cronologia consigliata per cicli di fantascienza epica', author: 'SciFiNerd', replies: 14, time: '4 giorni fa', content: 'Da Asimov a Philip K. Dick.' }
+                            ]
+                        }
+                    }
+                ]
+            },
+            cinema: {
+                name: "Cinema & TV",
+                icon: "fa-film",
+                color: "rose",
+                desc: "Pellicole cinematografiche, serie TV in streaming, festival internazionali e recensioni critiche.",
+                items: [
+                    {
+                        id: 'streaming',
+                        name: 'Serie TV & Streaming',
+                        tagline: 'Netflix, Prime, Disney+ & Apple TV',
+                        icon: 'fa-tv',
+                        bgGradient: 'from-rose-900 to-stone-900',
+                        officialUrl: 'https://www.comingsoon.it',
+                        officialName: 'ComingSoon / BadTaste',
+                        description: 'Calendario delle uscite streaming, rinnovi e recensioni episodi.',
+                        news: [
+                            { title: 'Le migliori serie TV sci-fi da vedere assolutamente', source: 'BadTaste', time: '4 ore fa', url: 'https://badtaste.it' }
+                        ],
+                        forum: {
+                            community: [
+                                { id: 22, title: 'Teorie sul finale della seconda stagione', author: 'SeriesAddict', replies: 31, time: '1 giorno fa', content: 'Attenzione spoiler nei commenti!' }
+                            ],
+                            general: [
+                                { id: 23, title: 'Migliori impostazioni Dolby Atmos per home cinema', author: 'AudioPhile', replies: 10, time: '5 giorni fa', content: 'Come disporre i diffusori nella stanza.' }
+                            ]
+                        }
+                    }
+                ]
+            },
+            fashion: {
+                name: "Moda & Lifestyle",
+                icon: "fa-shirt",
+                color: "purple",
+                desc: "Sfilate internazionali, tendenze fashion, sostenibilità tessile e lifestyle urbano.",
+                items: [
+                    {
+                        id: 'trends',
+                        name: 'Fashion Trends & Runway',
+                        tagline: 'Milano, Parigi, New York Fashion Week',
+                        icon: 'fa-wand-magic-sparkles',
+                        bgGradient: 'from-purple-900 to-slate-900',
+                        officialUrl: 'https://www.vogue.it',
+                        officialName: 'Vogue Italia',
+                        description: 'Le collezioni dei grandi stilisti e i nuovi trend sostenibili.',
+                        news: [
+                            { title: 'Tendenze moda autunno/inverno: Colori e tessuti', source: 'Vogue', time: '1 giorno fa', url: 'https://vogue.it' }
+                        ],
+                        forum: {
+                            community: [
+                                { id: 24, title: 'Vintage e seconda mano: Mercatini migliori a Milano', author: 'StyleIcon', replies: 14, time: '2 giorni fa', content: 'Consigli su dove trovare pezzi unici.' }
+                            ],
+                            general: [
+                                { id: 25, title: 'Guida ai tessuti naturali ecologici', author: 'EcoFashion', replies: 7, time: '6 giorni fa', content: 'Lino, canapa e cotone biologico.' }
+                            ]
+                        }
+                    }
+                ]
+            },
+            cuisine: {
+                name: "Cucina & Gastronomia",
+                icon: "fa-utensils",
+                color: "orange",
+                desc: "Ricette tradizionali regionali, alta cucina, enologia e ristorazione internazionale.",
+                items: [
+                    {
+                        id: 'gastronomy',
+                        name: 'Alta Cucina & Ricette',
+                        tagline: 'Sapori Territoriali & Masterchef',
+                        icon: 'fa-bowl-food',
+                        bgGradient: 'from-amber-900 to-orange-950',
+                        officialUrl: 'https://www.giallozafferano.it',
+                        officialName: 'GialloZafferano / Gambero Rosso',
+                        description: 'Segreti culinari, abbinamenti vini e ristoranti stellati.',
+                        news: [
+                            { title: 'Guida ai migliori vini rossi d annata', source: 'Gambero Rosso', time: 'Ieri', url: 'https://gamberorosso.it' }
+                        ],
+                        forum: {
+                            community: [
+                                { id: 26, title: 'Il segreto per un impasto della pizza perfetto a casa', author: 'ChefAmatoriale', replies: 40, time: '3 giorni fa', content: 'Idratazione al 75% e lievito madre.' }
+                            ],
+                            general: [
+                                { id: 27, title: 'Abbinamento formaggi stagionati e miele', author: 'SommelierIT', replies: 12, time: '1 settimana fa', content: 'Guida pratica per degustazioni.' }
+                            ]
+                        }
+                    }
+                ]
+            },
+            politics: {
+                name: "Politica & Appalti",
+                icon: "fa-landmark",
+                color: "blue",
+                desc: "Gazzetta Ufficiale, bandi di gara pubblici, trasparenza amministrativa e riforme legislative.",
+                items: [
+                    {
+                        id: 'tenders',
+                        name: 'Bandi di Gara & Appalti Pubblici',
+                        tagline: 'Trasparenza, Opere Pubbliche & Normative EU',
+                        icon: 'fa-file-contract',
+                        bgGradient: 'from-blue-950 to-indigo-950',
+                        officialUrl: 'https://www.anticorruzione.it',
+                        officialName: 'ANAC / Gazzetta Ufficiale',
+                        description: 'Monitoraggio bandi d appalto pubblici, codice dei contratti e trasparenza negli enti locali.',
+                        news: [
+                            { title: 'Nuovo codice degli appalti: Le scadenze per i comuni', source: 'Il Sole 24 Ore PA', time: '3 ore fa', url: 'https://ilsole24ore.com' },
+                            { title: 'Bandi PNRR: Assegnati nuovi fondi per infrastrutture digitali', source: 'ANSA Politica', time: 'Ieri', url: 'https://ansa.it' }
+                        ],
+                        forum: {
+                            community: [
+                                { id: 28, title: 'Dubbi sulla compilazione dell OEPV nei bandi pubblici', author: 'LegalAdvisor', replies: 9, time: '2 giorni fa', content: 'Confronto tra professionisti sugli elementi qualitativi dell offerta.' }
+                            ],
+                            general: [
+                                { id: 29, title: 'Guida all accesso civico generalizzato (FOIA)', author: 'TransparencyIT', replies: 15, time: '4 giorni fa', content: 'Come richiedere documenti alla pubblica amministrazione.' }
+                            ]
+                        }
+                    }
+                ]
+            },
+            jobs: {
+                name: "Lavoro & Carriere",
+                icon: "fa-briefcase",
+                color: "teal",
+                desc: "Nuove frontiere del lavoro, staffing, offerte di impiego e formazione professionale.",
+                items: [
+                    {
+                        id: 'staffing',
+                        name: 'Nuove Frontiere del Lavoro & Staffing',
+                        tagline: 'Smart Working, IT Jobs & 5.0 Careers',
+                        icon: 'fa-user-tie',
+                        bgGradient: 'from-teal-900 to-slate-900',
+                        officialUrl: 'https://www.infojobs.it',
+                        officialName: 'InfoJobs / LinkedIn Italia',
+                        description: 'Opportunità di carriera, tendenze del mercato del lavoro e competenze richieste.',
+                        news: [
+                            { title: 'Le professioni digitali più richieste dalle aziende', source: 'Repubblica Lavoro', time: '5 ore fa', url: 'https://repubblica.it' }
+                        ],
+                        forum: {
+                            community: [
+                                { id: 30, title: 'Smart working integrale vs lavoro ibrido', author: 'RemoteWorker', replies: 28, time: '1 giorno fa', content: 'Vantaggi e svantaggi vissuti sulla propria pelle.' }
+                            ],
+                            general: [
+                                { id: 31, title: 'Come ottimizzare il proprio CV per i sistemi ATS', author: 'HRRecruiter', replies: 19, time: '3 giorni fa', content: 'Parole chiave e formati compatibili.' }
+                            ]
+                        }
+                    }
+                ]
+            }
+        };
+
+        const globalLiveNews = [
+            { title: 'GlobalPulse Hub lancia l architettura SPA avanzata con esportazione istantanea per GitHub', source: 'Redazione Centrale', time: '10 min fa', cat: 'Portals', url: '#' },
+            { title: 'DayZ Patch rilasciata ufficialmente con nuove meccaniche di sopravvivenza', source: 'Gaming News', time: '1 ora fa', cat: 'Gaming', url: 'https://dayz.com' },
+            { title: 'Nuovo Codice degli Appalti: I dettagli sui bandi regionali europei', source: 'Politica & Appalti', time: '2 ore fa', cat: 'Politica', url: 'https://anticorruzione.it' },
+            { title: 'Transizione green nei trasporti pesanti: Presentati i nuovi camion a idrogeno', source: 'Veicoli & Motori', time: '3 ore fa', cat: 'Veicoli', url: 'https://trasportoeuropa.it' }
+        ];
+
+        window.onload = function() {
+            renderHomeLiveNews();
+        };
+
+        function changeRegion(reg) {
+            currentRegion = reg;
+            document.getElementById('current-region-display').innerText = `Area: ${reg}`;
+            if(activeItemId) {
+                const regTag = document.getElementById('item-region-tag');
+                if(regTag) regTag.innerText = `Area: ${reg}`;
+            }
+        }
+
+        function changeLanguage(lang) {
+            currentLanguage = lang;
+        }
+
+        function switchMainTab(tab) {
+            activeMainTab = tab;
+            clearSearch();
+            document.getElementById('view-home').classList.remove('hidden');
+            document.getElementById('view-category').classList.add('hidden');
+            setActiveNavButton('home');
+        }
+
+        function switchCategory(catKey) {
+            activeMainTab = 'category';
+            activeCategoryKey = catKey;
+            activeItemId = null;
+            clearSearch();
+
+            document.getElementById('view-home').classList.add('hidden');
+            document.getElementById('view-category').classList.remove('hidden');
+            document.getElementById('item-detail-view').classList.add('hidden');
+            document.getElementById('sub-catalog-section').classList.remove('hidden');
+
+            setActiveNavButton(catKey);
+
+            const catData = portalDatabase[catKey];
+            if(!catData) return;
+
+            document.getElementById('cat-badge-name').innerText = catData.name;
+            document.getElementById('cat-title').innerText = catData.name;
+            document.getElementById('cat-desc').innerText = catData.desc;
+            document.getElementById('cat-badge-icon').innerHTML = `<i class="fa-solid ${catData.icon}"></i>`;
+
+            renderSubCatalog(catData.items);
+        }
+
+        function setActiveNavButton(key) {
+            document.querySelectorAll('.cat-nav-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-600', 'text-white', 'shadow-sm');
+                btn.classList.add('text-gray-300', 'hover:bg-cyber-700', 'hover:text-white');
+            });
+            const activeBtn = document.getElementById(`cat-btn-${key}`);
+            if(activeBtn) {
+                activeBtn.classList.remove('text-gray-300', 'hover:bg-cyber-700', 'hover:text-white');
+                activeBtn.classList.add('bg-blue-600', 'text-white', 'shadow-sm');
+            }
+        }
+
+        function renderSubCatalog(items) {
+            const container = document.getElementById('sub-catalog-grid');
+            container.innerHTML = '';
+
+            items.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "glass-panel hover:border-blue-500/60 p-5 rounded-2xl cursor-pointer transition transform hover:-translate-y-1 group flex flex-col justify-between";
+                card.onclick = () => selectCatalogItem(item.id);
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-14 h-14 rounded-xl bg-gradient-to-br ${item.bgGradient} flex items-center justify-center text-2xl text-white shadow-lg group-hover:scale-110 transition">
+                                <i class="fa-solid ${item.icon}"></i>
+                            </div>
+                            <span class="text-[10px] bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2 py-1 rounded-full font-semibold">Attivo</span>
+                        </div>
+                        <h4 class="font-bold text-lg text-white group-hover:text-blue-400 transition">${item.name}</h4>
+                        <p class="text-xs text-blue-300 font-medium mt-0.5">${item.tagline}</p>
+                        <p class="text-xs text-gray-400 mt-2 line-clamp-2">${item.description}</p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-gray-800 flex items-center justify-between text-xs text-gray-400">
+                        <span><i class="fa-solid fa-newspaper mr-1 text-amber-400"></i> ${item.news.length} Notizie</span>
+                        <span class="text-blue-400 font-medium flex items-center gap-1 group-hover:translate-x-1 transition">Apri Hub <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function filterSubCatalog(query) {
+            const catData = portalDatabase[activeCategoryKey];
+            if(!catData) return;
+            const filtered = catData.items.filter(item => 
+                item.name.toLowerCase().includes(query.toLowerCase()) || 
+                item.description.toLowerCase().includes(query.toLowerCase())
+            );
+            renderSubCatalog(filtered);
+        }
+
+        function selectCatalogItem(itemId) {
+            const catData = portalDatabase[activeCategoryKey];
+            const item = catData.items.find(i => i.id === itemId);
+            if(!item) return;
+
+            activeItemId = itemId;
+            document.getElementById('sub-catalog-section').classList.add('hidden');
+            document.getElementById('item-detail-view').classList.remove('hidden');
+
+            document.getElementById('item-cover-icon').className = `w-24 h-24 sm:w-32 sm:h-32 rounded-2xl bg-gradient-to-br ${item.bgGradient} flex items-center justify-center text-4xl sm:text-6xl text-white shadow-xl shrink-0`;
+            document.getElementById('item-cover-icon').innerHTML = `<i class="fa-solid ${item.icon}"></i>`;
+            document.getElementById('item-title').innerText = item.name;
+            document.getElementById('item-badge-tag').innerText = item.tagline;
+            document.getElementById('item-long-desc').innerText = item.description;
+            document.getElementById('item-region-tag').innerText = `Area: ${currentRegion}`;
+
+            const officialContainer = document.getElementById('item-official-links');
+            officialContainer.innerHTML = `
+                <a href="${item.officialUrl}" target="_blank" rel="noopener noreferrer" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-semibold shadow transition flex items-center gap-2">
+                    <i class="fa-solid fa-globe"></i> ${item.officialName} <i class="fa-solid fa-external-link text-[10px]"></i>
+                </a>
+            `;
+
+            renderItemNews(item.news);
+            renderForumThreads(item.forum);
+        }
+
+        function backToSubCatalog() {
+            activeItemId = null;
+            document.getElementById('item-detail-view').classList.add('hidden');
+            document.getElementById('sub-catalog-section').classList.remove('hidden');
+        }
+
+        function switchItemTab(tab) {
+            const newsTab = document.getElementById('item-tab-news');
+            const forumTab = document.getElementById('item-tab-forum');
+            const newsContent = document.getElementById('item-content-news');
+            const forumContent = document.getElementById('item-content-forum');
+
+            if(tab === 'news') {
+                newsTab.className = "pb-3 text-sm font-semibold border-b-2 border-blue-500 text-blue-400 flex items-center gap-2 transition";
+                forumTab.className = "pb-3 text-sm font-medium border-b-2 border-transparent text-gray-400 hover:text-gray-200 flex items-center gap-2 transition";
+                newsContent.classList.remove('hidden');
+                forumContent.classList.add('hidden');
+            } else {
+                forumTab.className = "pb-3 text-sm font-semibold border-b-2 border-blue-500 text-blue-400 flex items-center gap-2 transition";
+                newsTab.className = "pb-3 text-sm font-medium border-b-2 border-transparent text-gray-400 hover:text-gray-200 flex items-center gap-2 transition";
+                forumContent.classList.remove('hidden');
+                newsContent.classList.add('hidden');
+            }
+        }
+
+        function renderItemNews(newsArray) {
+            const container = document.getElementById('item-news-list');
+            container.innerHTML = '';
+
+            newsArray.forEach(n => {
+                const div = document.createElement('div');
+                div.className = "glass-panel p-4 rounded-xl border border-gray-800 hover:border-gray-700 transition flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4";
+                div.innerHTML = `
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2 text-xs text-gray-400">
+                            <span class="text-amber-400 font-semibold"><i class="fa-solid fa-newspaper mr-1"></i> ${n.source}</span>
+                            <span>•</span>
+                            <span>${n.time}</span>
+                        </div>
+                        <h4 class="font-bold text-base text-white">${n.title}</h4>
+                    </div>
+                    <a href="${n.url}" target="_blank" rel="noopener noreferrer" class="px-3.5 py-1.5 bg-cyber-700 hover:bg-cyber-600 text-gray-200 rounded-lg text-xs font-medium whitespace-nowrap transition flex items-center gap-1.5">
+                        Leggi Fonte <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                    </a>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function switchForumSection(sec) {
+            activeForumSection = sec;
+            const btnComm = document.getElementById('forum-sec-community');
+            const btnGen = document.getElementById('forum-sec-general');
+
+            if(sec === 'community') {
+                btnComm.className = "px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold bg-blue-600 text-white transition shadow";
+                btnGen.className = "px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-gray-300 hover:bg-cyber-700 hover:text-white transition";
+            } else {
+                btnGen.className = "px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold bg-blue-600 text-white transition shadow";
+                btnComm.className = "px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-gray-300 hover:bg-cyber-700 hover:text-white transition";
+            }
+
+            const catData = portalDatabase[activeCategoryKey];
+            const item = catData.items.find(i => i.id === activeItemId);
+            if(item) renderForumThreads(item.forum);
+        }
+
+        function renderForumThreads(forumObj) {
+            const container = document.getElementById('forum-threads-list');
+            container.innerHTML = '';
+
+            const threads = forumObj[activeForumSection] || [];
+            if(threads.length === 0) {
+                container.innerHTML = `<p class="text-xs text-gray-400 text-center py-6">Nessuna discussione in questa sezione. Crea la prima!</p>`;
+                return;
+            }
+
+            threads.forEach(t => {
+                const div = document.createElement('div');
+                div.className = "glass-panel p-4 rounded-xl border border-gray-800 hover:border-blue-500/30 transition space-y-2";
+                div.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2 text-xs text-gray-400">
+                            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-[10px]">${t.author.charAt(0)}</span>
+                            <span class="text-gray-300 font-medium">${t.author}</span>
+                            <span>•</span>
+                            <span>${t.time}</span>
+                        </div>
+                        <span class="text-xs bg-cyber-700 px-2 py-0.5 rounded text-gray-300"><i class="fa-solid fa-comment mr-1"></i> ${t.replies} risposte</span>
+                    </div>
+                    <h4 class="font-bold text-base text-white">${t.title}</h4>
+                    <p class="text-xs text-gray-300 bg-cyber-900/40 p-3 rounded-lg border border-gray-800/80">${t.content}</p>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function openNewThreadModal() {
+            document.getElementById('threadModal').classList.remove('hidden');
+        }
+        function closeNewThreadModal() {
+            document.getElementById('threadModal').classList.add('hidden');
+        }
+        function openNotificationModal() {
+            document.getElementById('notificationModal').classList.remove('hidden');
+        }
+        function closeNotificationModal() {
+            document.getElementById('notificationModal').classList.add('hidden');
+        }
+
+        function handleCreateThread(e) {
+            e.preventDefault();
+            const sec = document.getElementById('newThreadSection').value;
+            const title = document.getElementById('newThreadTitle').value;
+            const author = document.getElementById('newThreadAuthor').value;
+            const content = document.getElementById('newThreadContent').value;
+
+            const catData = portalDatabase[activeCategoryKey];
+            const item = catData.items.find(i => i.id === activeItemId);
+
+            if(item) {
+                if(!item.forum[sec]) item.forum[sec] = [];
+                item.forum[sec].unshift({
+                    id: Date.now(),
+                    title: title,
+                    author: author,
+                    replies: 0,
+                    time: 'Proprio ora',
+                    content: content
+                });
+
+                activeForumSection = sec;
+                renderForumThreads(item.forum);
+            }
+
+            closeNewThreadModal();
+            e.target.reset();
+        }
+
+        function renderHomeLiveNews() {
+            const container = document.getElementById('home-live-news-feed');
+            container.innerHTML = '';
+
+            globalLiveNews.forEach(n => {
+                const div = document.createElement('div');
+                div.className = "glass-panel p-4 rounded-xl border border-gray-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4";
+                div.innerHTML = `
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2 text-xs text-gray-400">
+                            <span class="px-2 py-0.5 bg-blue-500/10 text-blue-400 rounded text-[10px] font-semibold">${n.cat}</span>
+                            <span>•</span>
+                            <span class="text-emerald-400">${n.source}</span>
+                            <span>•</span>
+                            <span>${n.time}</span>
+                        </div>
+                        <h4 class="font-bold text-sm sm:text-base text-white">${n.title}</h4>
+                    </div>
+                    <a href="${n.url}" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 bg-cyber-700 hover:bg-cyber-600 text-gray-200 rounded-lg text-xs font-medium whitespace-nowrap transition">
+                        Fonte Ufficiale <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                    </a>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function handleGlobalSearch(query) {
+            const searchView = document.getElementById('search-results-view');
+            const searchContainer = document.getElementById('search-results-container');
+            const queryText = document.getElementById('search-query-text');
+
+            if(!query || query.trim() === '') {
+                searchView.classList.add('hidden');
+                return;
+            }
+
+            searchView.classList.remove('hidden');
+            queryText.innerText = `"${query}"`;
+            searchContainer.innerHTML = '';
+
+            let results = [];
+            Object.keys(portalDatabase).forEach(catKey => {
+                portalDatabase[catKey].items.forEach(item => {
+                    if(item.name.toLowerCase().includes(query.toLowerCase()) || 
+                       item.description.toLowerCase().includes(query.toLowerCase()) ||
+                       item.tagline.toLowerCase().includes(query.toLowerCase())) {
+                        results.push({ catKey, item });
+                    }
+                });
+            });
+
+            if(results.length === 0) {
+                searchContainer.innerHTML = `<p class="text-xs text-gray-400 col-span-full py-4">Nessun risultato trovato per la ricerca.</p>`;
+                return;
+            }
+
+            results.forEach(res => {
+                const card = document.createElement('div');
+                card.className = "glass-panel p-4 rounded-xl border border-gray-800 hover:border-blue-500/50 cursor-pointer transition";
+                card.onclick = () => {
+                    switchCategory(res.catKey);
+                    selectCatalogItem(res.item.id);
+                };
+                card.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-gradient-to-br ${res.item.bgGradient} flex items-center justify-center text-white text-lg shrink-0">
+                            <i class="fa-solid ${res.item.icon}"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-blue-400 uppercase tracking-wider font-semibold">${portalDatabase[res.catKey].name}</span>
+                            <h4 class="font-bold text-sm text-white">${res.item.name}</h4>
+                            <p class="text-xs text-gray-400 line-clamp-1">${res.item.description}</p>
+                        </div>
+                    </div>
+                `;
+                searchContainer.appendChild(card);
+            });
+        }
+
+        function clearSearch() {
+            document.getElementById('globalSearchInput').value = '';
+            document.getElementById('search-results-view').classList.add('hidden');
+        }
+
+        // Export Code Function for GitHub & Netlify
+        function exportPortalCode() {
+            const htmlContent = document.documentElement.outerHTML;
+            const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'index.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
